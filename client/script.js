@@ -231,31 +231,41 @@ document.getElementById('animals-button').addEventListener('click', ohMy)
 
 // CODE HERE 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 const createFood = (event) => {
     event.preventDefault()
-    clearCharacters()
+   //prevents page from refreshing when form is submitted
 
-    // let foodObj = {
-    //     foodName: newFoodInput.value
-    // }
+   let foodInput = document.querySelector('input'); //selecting input from html file
 
+   let body = {
+    newFood: foodInput.value
+   };
+   //getting word user types into the input and saves it to a property in the object
 
-    axios.get(`${baseURL}/food?foodName = ${foodInput.value}`)
-            .then((res) => {
-            let foodFood = res.data
+   axios.post('http://localhost:3000/food', body)// hittin endpoint made in the server file
+   .then(res => {
+    let fruitSection = document.getElementById('fruits') //selecting fruits section from html so the server data doesnt repeat when displayed
+    fruitSection.innerHTML = ''; //clearing the fruits section
+    for(let i =0; i < res.data.lenth; i++){
+        let newFruit =document.createElement('p');//making a new p element and saving to a variable
+        newFruit.textContent = res.data[i]; // setting the text of the new p element to the fruit from the database
+        fruitSection.appendChild(newFruit); //adding the p element to the fruits section
+    }
+   })
+foodInput.value = ''; //clearing the input field for a polished look
 
-            for(let i = 0; i < res.data.length; i++){
-                createFood(food[i])
-
-                document.body.appendChild(paragraph)
-            }
-
-
-
-    let newFood = document.getElementById('food-form')
-
-
-}).catch((err)=>{
-console.log(err)
-})
 }
+document.getElementById('food-form').addEventListener('submit', createFood); //selecting the form and adding and event listner that will run the createFood function when the form is submitted
